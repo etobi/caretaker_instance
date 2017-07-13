@@ -51,6 +51,7 @@ cache:
   directories:
     - $HOME/.composer/cache
 
+
 before_install:
   - if php -i | grep -q xdebug; then phpenv config-rm xdebug.ini; fi
   - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
@@ -61,33 +62,33 @@ before_script:
   - git checkout composer.json
   - export TYPO3_PATH_WEB=$PWD/.Build/Web
 
+script:
+  - >
+    echo;
+    echo "Running unit tests";
+    .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
+
+  - >
+    echo;
+    echo "Running php lint";
+    find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+
 jobs:
   include:
-    - stage: test
-        script:
-          - >
-            echo;
-            echo "Running unit tests";
-            .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
-
-          - >
-            echo;
-            echo "Running php lint";
-            find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
     - stage: TER-upload
-        script:
-          - >
-            echo -e "TER upload...\n"
-            if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASSWORD" ]; then
-              echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n"
-              curl -sSL https://raw.githubusercontent.com/alrra/travis-after-all/1.4.4/lib/travis-after-all.js | node
-              if [ $? -eq 0 ]; then
-                # Cleanup before we upload
-                git reset --hard HEAD && git clean -fx
-                # Upload
-                TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
-                echo "Uploading release ${TRAVIS_TAG} to TER"
-                .Build/bin/upload . "$TYPO3_ORG_USERNAME" "$TYPO3_ORG_PASSWORD" "$TAG_MESSAGE"
-              fi;
+      php: 7.1
+      script:
+        - >
+          echo -e "TER upload...\n"
+          if [ -n "$TRAVIS_TAG" ] && [ -n "$TYPO3_ORG_USERNAME" ] && [ -n "$TYPO3_ORG_PASSWORD" ]; then
+            echo -e "Preparing upload of release ${TRAVIS_TAG} to TER\n"
+            curl -sSL https://raw.githubusercontent.com/alrra/travis-after-all/1.4.4/lib/travis-after-all.js | node
+            if [ $? -eq 0 ]; then
+              # Cleanup before we upload
+              git reset --hard HEAD && git clean -fx
+              # Upload
+              TAG_MESSAGE=`git tag -n10 -l $TRAVIS_TAG | sed 's/^[0-9.]*[ ]*//g'`
+              echo "Uploading release ${TRAVIS_TAG} to TER"
+              .Build/bin/upload . "$TYPO3_ORG_USERNAME" "$TYPO3_ORG_PASSWORD" "$TAG_MESSAGE"
             fi;
-
+          fi;
