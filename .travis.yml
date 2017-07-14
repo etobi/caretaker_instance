@@ -42,15 +42,14 @@ before_script:
 
 script:
   - >
-    if [ "$TRAVIS_ALLOW_FAILURE" == "false" ]; then
-      echo "Running unit tests";
-      .Build/bin/phpunit;
+    if [ "$TRAVIS_ALLOW_FAILURE" == "false" ]; then return; fi
+    echo "Running unit tests";
+    .Build/bin/phpunit;
 
-      echo "Running php lint";
-      find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
-    else
-      echo "skip testing";
-    fi
+    echo "Running php lint";
+    find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+  - >
+    echo ok
 
 jobs:
   fast_finish: true
