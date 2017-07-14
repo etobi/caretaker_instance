@@ -48,17 +48,17 @@ jobs:
           echo -e "test...\n"
           echo "TRAVIS_PHP_VERSION $TRAVIS_PHP_VERSION"
           echo "TYPO3_VERSION $TYPO3_VERSION"
-#        - >
-#          echo "Running unit tests";
-#          .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
-#        - >
-#          echo "Running php lint";
-#          find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+        - >
+          echo "Running unit tests";
+          .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
+        - >
+          echo "Running php lint";
+          find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
 
     - stage: deploy to ter
       install: skip
       php: 7.1
-      env: TYPO3_VERSION=
+      env: TYPO3_VERSION="^7.6"
       script:
         - >
           echo -e "TER upload...\n"
