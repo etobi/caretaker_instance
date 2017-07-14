@@ -46,7 +46,7 @@ script:
     echo "TYPO3_VERSION $TYPO3_VERSION"
   - >
     echo "Running unit tests";
-    .Build/bin/phpunit -c .Build/vendor/typo3/cms/typo3/sysext/core/Build/UnitTests.xml Tests/Unit/
+    .Build/bin/phpunit
   - >
     echo "Running php lint";
     find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
@@ -66,6 +66,10 @@ jobs:
       env: TYPO3_VERSION=^7.6
     - php: 5.3
       env: TYPO3_VERSION=^7.6
+    - php: 7.0
+      env: TYPO3_VERSION=^6.2
+    - php: 7.1
+      env: TYPO3_VERSION=^6.2
   include:
     - stage: deploy to ter
       install: skip
