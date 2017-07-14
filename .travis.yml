@@ -16,16 +16,16 @@ addons:
 cache:
   directories:
     - $HOME/.composer/cache
-#
-#before_install:
-#  - if php -i | grep -q xdebug; then phpenv config-rm xdebug.ini; fi
-#  - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
-#
-#before_script:
-#  - if [ "$TYPO3_VERSION" == "^6.2.0" ]; then composer require typo3/cms-composer-installers="1.2.5 as 1.1.4" --no-update; fi
-#  - composer require typo3/cms="$TYPO3_VERSION"
-#  - git checkout composer.json
-#  - export TYPO3_PATH_WEB=$PWD/.Build/Web
+
+before_install:
+  - if php -i | grep -q xdebug; then phpenv config-rm xdebug.ini; fi
+  - if [ "$GITHUB_COMPOSER_AUTH" ]; then composer config -g github-oauth.github.com $GITHUB_COMPOSER_AUTH; fi
+
+before_script:
+  - if [ "$TYPO3_VERSION" == "^6.2.0" ]; then composer require typo3/cms-composer-installers="1.2.5 as 1.1.4" --no-update; fi
+  - composer require typo3/cms="$TYPO3_VERSION"
+  - git checkout composer.json
+  - export TYPO3_PATH_WEB=$PWD/.Build/Web
 
 php:
   - 7.1
@@ -58,6 +58,7 @@ jobs:
     - stage: deploy to ter
       install: skip
       php: 7.1
+      env: TYPO3_VERSION=
       script:
         - >
           echo -e "TER upload...\n"
