@@ -44,7 +44,7 @@ jobs:
   include:
     - stage: test
       script:
-         - >
+        - >
           echo -e "test...\n"
           echo "TRAVIS_PHP_VERSION $TRAVIS_PHP_VERSION"
           echo "TYPO3_VERSION $TYPO3_VERSION"
