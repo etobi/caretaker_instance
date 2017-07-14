@@ -42,14 +42,15 @@ before_script:
 
 script:
   - >
-    echo "TRAVIS_PHP_VERSION $TRAVIS_PHP_VERSION"
-    echo "TYPO3_VERSION $TYPO3_VERSION"
-  - >
-    echo "Running unit tests";
-    .Build/bin/phpunit
-  - >
-    echo "Running php lint";
-    find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+    if [ "$TRAVIS_ALLOW_FAILURE" == "false" ]; then
+      echo "Running unit tests";
+      .Build/bin/phpunit;
+
+      echo "Running php lint";
+      find . -name \*.php ! -path "./.Build/*" | parallel --gnu php -d display_errors=stderr -l {} > /dev/null \;
+    else
+      echo "skip testing";
+    fi
 
 jobs:
   fast_finish: true
