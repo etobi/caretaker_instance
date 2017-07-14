@@ -13,6 +13,19 @@ addons:
     packages:
       - parallel
 
+php:
+  - 7.1
+  - 7.0
+  - 5.6
+  - 5.5
+  - 5.4
+  - 5.3
+
+env:
+  - TYPO3_VERSION=^8.7
+  - TYPO3_VERSION=^7.6
+  - TYPO3_VERSION=^6.2
+
 cache:
   directories:
     - $HOME/.composer/cache
@@ -27,20 +40,18 @@ before_script:
   - git checkout composer.json
   - export TYPO3_PATH_WEB=$PWD/.Build/Web
 
-php:
-  - 7.1
-  - 7.0
-  - 5.6
-  - 5.5
-  - 5.4
-  - 5.3
-
-env:
-  - TYPO3_VERSION=^8.7
-  - TYPO3_VERSION=^7.6
-  - TYPO3_VERSION=^6.2
+script: echo "script"
 
 jobs:
+  exclude:
+    - php: 5.3
+      env: TYPO3_VERSION="^7.6"
+    - php: 5.4
+      env: TYPO3_VERSION="^7.6"
+    - php: 7.0
+      env: TYPO3_VERSION="^6.2"
+    - php: 7.1
+      env: TYPO3_VERSION="^6.2"
   include:
     - stage: test
       script:
